@@ -69,28 +69,16 @@ Route::group(['middleware' => 'web'], function () {
 
         # ademas de iniciar sesión debe tner una cuenta verificada
 
+        Route::resource('publish', 'PostController');
 
         Route::group(['middleware' => 'verified'], function(){
-
-
-            Route::resource('publish', 'PostController');
-            
-            /*
-            Route::get('publish', function(){
-                return view('publish');
-            });
-
-            Route::post('publish', function(){
-                return dd(Request::all())  ;
-            });
-            */
-
+            # rutas exclusivas de usuarios verificados
         });
 
 
         # ademas de iniciar sesión debe tner una cuenta verificada
         Route::group(['middleware' => 'role:admin'], function(){
-
+            
             Route::get('admin/settings', function(){
                 return view('admin/settings');
             });
