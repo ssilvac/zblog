@@ -15,13 +15,20 @@ class UsersTableSeeder extends Seeder
     	DB::table('users')->truncate();
 
     	factory(App\User::class)->create([
-    		'name' 		=> 'Sebastián Silva',
-    		'email' 	=> 'sebasilvac88@gmail.com',
-    		'role'  	=> 'admin',
-    		'password'	=> bcrypt('admin')
-    	]);
+            'name'      => 'Sebastián Silva',
+            'email'     => 'sebasilvac88@gmail.com',
+            'role'      => 'admin',
+            'password'  => bcrypt('admin')
+        ]);
+
+        factory(App\User::class)->create([
+            'name'      => 'Guillermo Salinas',
+            'email'     => 'guillermo.salinas@zentagroup.com',
+            'role'      => 'admin',
+            'password'  => bcrypt('zentaadmin')
+        ]);
         
-        factory(App\User::class, 49)->create();
+        //factory(App\User::class, 49)->create();
 
     }
 }
