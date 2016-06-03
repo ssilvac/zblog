@@ -16,11 +16,4 @@ return [
     'failed' => 'These credentials do not match our records.',
     'throttle' => 'Too many login attempts. Please try again in :seconds seconds.',
 
-    'register_title'    => 'Registro',
-    'register_button'   => 'Registro',
-    'login_title'       => 'Inicio de sesión',
-    'login_button'      => 'Iniciar sesión',
-    'remember'          => 'Recuerdame',
-    'forgot_link'       => '¿Olvidaste tu contraseña?'
-
 ];
