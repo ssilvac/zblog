@@ -34,13 +34,6 @@ Route::get('confirmation/{token}', 'Auth\AuthController@getConfirmation')->name(
 
 
 
-Route::group(['middleware' => ['web']], function () {
-
-    
-
-});
-
-
 
 Route::group(['middleware' => 'web'], function () {
 
@@ -52,6 +45,11 @@ Route::group(['middleware' => 'web'], function () {
     });
 
     Route::get('/',[
+            'uses' => 'PostController@listapublica',
+            'as' => 'posts'
+        ]);
+
+    Route::get('/home',[
             'uses' => 'PostController@listapublica',
             'as' => 'posts'
         ]);
