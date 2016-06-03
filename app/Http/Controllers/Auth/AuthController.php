@@ -7,6 +7,9 @@ use Validator;
 use App\Http\Controllers\Controller;
 use Illuminate\Foundation\Auth\ThrottlesLogins;
 use Illuminate\Foundation\Auth\AuthenticatesAndRegistersUsers;
+use Illuminate\Http\Request;
+
+use Illuminate\Support\Facades\Mail;
 
 class AuthController extends Controller
 {
@@ -28,7 +31,7 @@ class AuthController extends Controller
      *
      * @var string
      */
-    protected $redirectTo = '/';
+    protected $redirectTo = '/home';
 
     /**
      * Create a new authentication controller instance.
@@ -37,7 +40,7 @@ class AuthController extends Controller
      */
     public function __construct()
     {
-        $this->middleware($this->guestMiddleware(), ['except' => 'logout']);
+        $this->middleware('guest', ['except' => ['getConfirmation','logout']]);
     }
 
     /**
@@ -51,7 +54,7 @@ class AuthController extends Controller
         return Validator::make($data, [
             'name' => 'required|max:255',
             'email' => 'required|email|max:255|unique:users',
-            'password' => 'required|min:6|confirmed',
+            'password' => 'required|confirmed|min:6',
         ]);
     }
 
@@ -63,10 +66,89 @@ class AuthController extends Controller
      */
     protected function create(array $data)
     {
-        return User::create([
-            'name' => $data['name'],
-            'email' => $data['email'],
-            'password' => bcrypt($data['password']),
+        $user = new User([
+            'name'      => $data['name'],
+            'last_name' => $data['last_name'],
+            'email'     => $data['email'],
+            'password'  => bcrypt($data['password']),
         ]);
+
+        $user->role                 = 'user';
+        $user->registration_token   = str_random(40);
+        $user->save();
+
+        $url = route('confirmation',['token'=>$user->registration_token]);
+
+
+        Mail::send('auth.emails.registration', compact('user', 'url'), function($m) use ($user){
+            $m->to($user->email, $user->name)->subject('Activa tu cuenta');
+        });
+
+        return $user;
     }
+
+    public function getCredentials(Request $request)
+    {
+        /*
+            * en vez de email puede ser username, depende como se quiera, pero
+            * es necesario tenerlo en la BD, formularios, migraciones, seeder etc etc
+        */
+        return [
+            'email' => $request->get('email'),
+            'password' => $request->get('password'),
+            # registration_token se comenta, ya que permitiremos el login, 
+            # pero restringiremos su verificacion a ciertas rutas
+            #'registration_token' => null,
+            'active'   => true
+        ];
+    }
+
+    public function getConfirmation($token){
+
+        $user = User::where('registration_token', $token)->firstOrFail();
+        $user->registration_token = null;
+        $user->save();
+
+        return redirect()->route('home')->with('alert', 'Email confirmado !');
+
+    }
+
+
+
+    /**
+     * Handle a registration request for the application.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function postRegister(Request $request)
+    {
+        return $this->register($request);
+    }
+
+    /**
+     * Handle a registration request for the application.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function register(Request $request)
+    {
+
+        $validator = $this->validator($request->all());
+
+        if ($validator->fails())
+        {
+            $this->throwValidationException(
+                $request, $validator
+            );
+        }
+
+        $user = $this->create($request->all());
+        return redirect('login')->with('alert', 'Por favor, confirma tu Email ');
+
+    }
+
+
+
 }
