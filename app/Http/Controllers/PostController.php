@@ -117,7 +117,7 @@ class PostController extends Controller {
 		}
 		
 	
-		return redirect('admin.post');
+		return redirect('/');
 	}
 
 	/**
