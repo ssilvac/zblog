@@ -25,6 +25,10 @@
 	max-width: 100%;
 }
 
+.img_post{
+	max-width: 100%;
+}
+
 .post-cerrar{
 	position: static;
 }

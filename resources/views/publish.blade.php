@@ -9,13 +9,12 @@
             @include('partials/errors')
             @include('partials/success')
 
-
             <div class="panel panel-default">
                 <div class="panel-heading">New post</div>
 
                 <div class="panel-body">
                     
-                    <form action="{{ url('publish') }}" role='form' method='POST'>
+                    <form action="{{ url('publish') }}" role='form' method='POST'  accept-charset="UTF-8" enctype="multipart/form-data">
 
                         <input type='hidden' name='_token' value='{{ csrf_token() }}'>
 
@@ -34,8 +33,16 @@
                                 @foreach ($tipos as $tipo)
                                     <option value='{{ $tipo->id }}'>{{ $tipo->name }}</option>
                                 @endforeach
-        
                             </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="imagen">Imagen principal</label>
+                            <input type="file" class="form-control" name='imagen' id='imagen'>
+                        </div>
+
+                        <div class="form-group">
+                            
                         </div>
                         
                         <div class="form-group">

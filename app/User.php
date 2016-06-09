@@ -29,8 +29,14 @@ class User extends Authenticatable
         return $this->id == $post->user_id;
     }
 
+    public function isAdmin() {
+        return $this->role == 'admin';
+    }
+
     public function posts()
     {
         return $this->hasMany('App\Post');
     }
+
+    
 }

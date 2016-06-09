@@ -13,6 +13,13 @@ class Post extends Model {
      */
     protected $table = 'posts';
 
+    public $fillable = [
+        'title',
+        'description',
+        'tipo_id',
+        'imagen'
+    ];
+
 
     public function user()
     {
@@ -22,5 +29,12 @@ class Post extends Model {
     public function tipo()
     {
         return $this->belongsTo(TipoPost::class);
+    }
+
+    public function scopeType($query, $type)
+    {
+        if ($type != '') {
+            $query->where('tipo_id', $type);
+        }
     }
 }

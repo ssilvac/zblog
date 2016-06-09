@@ -13,7 +13,8 @@ class AuthServiceProvider extends ServiceProvider
      * @var array
      */
     protected $policies = [
-        'App\Model' => 'App\Policies\ModelPolicy',
+        //'App\Model' => 'App\Policies\ModelPolicy',
+        User::class => UserPolicy::class,
     ];
 
     /**
@@ -24,6 +25,16 @@ class AuthServiceProvider extends ServiceProvider
      */
     public function boot(GateContract $gate)
     {
+
+        $gate->before(function ($user) {
+
+            # si es admin tiene permiso a todo !!
+            if ($user->isAdmin()) {
+                return true;
+            }
+
+        });
+        
         $this->registerPolicies($gate);
 
         //

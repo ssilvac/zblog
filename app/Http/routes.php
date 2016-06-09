@@ -58,7 +58,8 @@ Route::group(['middleware' => 'web'], function () {
             'uses' => 'PostController@listapublica',
             'as' => 'posts'
         ]);
-    
+
+
 
 
     Route::group(['middleware' => 'auth'], function () {
@@ -71,32 +72,34 @@ Route::group(['middleware' => 'web'], function () {
 
         Route::resource('publish', 'PostController');
 
-        Route::group(['middleware' => 'verified'], function(){
-            # rutas exclusivas de usuarios verificados
-        });
+        
 
+        Route::resource('admin/posts', 'PostController');
+
+        Route::delete('admin/posts/delete/{id}', [
+            'as' => 'admin/posts/delete',
+            'uses' => 'PostController@delete'
+        ]);
+
+        
 
         # ademas de iniciar sesión debe tner una cuenta verificada
         Route::group(['middleware' => 'role:admin'], function(){
-            
-            Route::get('admin/settings', function(){
-                return view('admin/settings');
-            });
-
         });
-
         # ademas de iniciar sesión debe tner una cuenta verificada
         Route::group(['middleware' => 'role:editor'], function(){
-
-            Route::get('admin/posts', [
-                'uses' => 'PostController@index',
-                'as' => 'posts'
-            ]);
-
         });
+        # rutas exclusivas de usuarios verificados
+        Route::group(['middleware' => 'verified'], function(){
+        });
+
 
         Route::get('account', function(){
             return view('admin/account');
+        });
+
+        Route::get('admin/settings', function(){
+            return view('admin/settings');
         });
 
         Route::get('account/password', 'AccountController@getPassword');
