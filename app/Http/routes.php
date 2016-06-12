@@ -35,7 +35,7 @@ Route::get('confirmation/{token}', 'Auth\AuthController@getConfirmation')->name(
 
 
 
-Route::group(['middleware' => 'web'], function () {
+//Route::group(['middleware' => 'web'], function () {
 
     //rutas de login reset logout etc etc
     Route::auth();
@@ -110,4 +110,4 @@ Route::group(['middleware' => 'web'], function () {
     });
         
     
-});
+//});

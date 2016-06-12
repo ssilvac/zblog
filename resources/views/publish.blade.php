@@ -6,13 +6,15 @@
     <div class="row">
         <div class="col-md-10 col-md-offset-1">
 
-            @include('partials/errors')
-            @include('partials/success')
+            
 
             <div class="panel panel-default">
-                <div class="panel-heading">New post</div>
+                <div class="panel-heading">Nueva publicación</div>
 
                 <div class="panel-body">
+
+                        @include('partials/errors')
+                        @include('partials/success')
                     
                     <form action="{{ url('publish') }}" role='form' method='POST'  accept-charset="UTF-8" enctype="multipart/form-data">
 
@@ -21,7 +23,7 @@
 
                         <div class="form-group">
                             <label for="title">Nombre</label>
-                            <input type="text" class="form-control" id="title" name="title" placeholder="Nombre">
+                            <input type="text" class="form-control" id="title" name="title" placeholder="Nombre" value="{{ old('title') }}">
                         </div>
 
                         <div class='form-group' >
@@ -38,7 +40,7 @@
 
                         <div class="form-group">
                             <label for="imagen">Imagen principal</label>
-                            <input type="file" class="form-control" name='imagen' id='imagen'>
+                            <input type="file" class="form-control" name='imagen' id='imagen' value="{{ old('imagen') }}">
                         </div>
 
                         <div class="form-group">
@@ -47,12 +49,12 @@
                         
                         <div class="form-group">
                             <label for="description">Texto</label>
-                            <textarea class="form-control" rows="3" name='description' id='description'></textarea>     
+                            <textarea class="form-control" rows="3" name='description' id='description'>{{ old('description') }}</textarea>     
                         </div>
 
                         <br>    
 
-                        <button type="submit" class="btn btn-default">Submit</button>
+                        <button type="submit" class="btn btn-default">Publicar</button>
                     </form>
 
 

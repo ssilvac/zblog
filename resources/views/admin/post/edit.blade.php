@@ -13,7 +13,13 @@
                     @include('partials/errors')
                     @include('partials/success')
 
-                    {!! Form::model($post, ['route' => ['admin.posts.update', $post->id], 'method' => 'patch']) !!}
+                    {!! Form::model($post, 
+                        [   
+                            'route' => ['admin.posts.update', $post->id],
+                            'method' => 'patch',
+                            'accept-charset' => 'UTF-8',
+                            'enctype' => 'multipart/form-data'
+                        ]) !!}
 
                         {!! csrf_field() !!}
 
@@ -48,6 +54,12 @@
                                 @endforeach
         
                             </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="imagen">Imagen principal</label>
+                            <input type="file" class="form-control" name='imagen' id='imagen' value="{!! $post->imagen !!}">
+                            <p class="help-block">Solo para cambiar imagen.</p>
                         </div>
 
                         <div class="form-group {{ $errors->has('description') ? ' has-error' : '' }}">

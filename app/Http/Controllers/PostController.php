@@ -2,14 +2,16 @@
 
 namespace App\Http\Controllers;
 
+
 use Gate;
 use Mail;
 use Response;
+use File;
 use App\Http\Controllers\Controller;
 use App\Post;
 use App\TipoPost;
 use Illuminate\Http\Request;
-//use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Hash;
 
 class PostController extends Controller {
 
@@ -83,9 +85,49 @@ class PostController extends Controller {
 	}
 
 
-	public function update(Request $request)
+	public function update($id, Request $request)
 	{
-		dd($request);
+
+		$this->validate($request, [
+			'title' 			=> 'required',
+			'description' 		=> 'required|string',
+			'tipo_id' 			=> 'required|int'
+		]);
+
+
+		$post = Post::find($id);
+
+		$post->title 		= $request->get('title');
+		$post->description 	= $request->get('description');
+		$post->tipo_id 		= $request->get('tipo_id');
+
+		if($file = $request->file('imagen'))
+		{
+			// guardamos la ruta de la imagen antigua
+			if(!empty($post->imagen)){
+				$imagenantigua = $post->imagen;
+			}
+		
+			// guardamos la imagen
+			$nombre = $id."_".date('Ymdhisu').".".File::extension($file->getClientOriginalName());
+			$request->file('imagen')->move(public_path($this->ruta), $nombre);
+			$post->imagen = $this->ruta."/".$nombre;
+		}
+
+		if($post->save()){
+
+			//eliminamos imagen antigua
+			if(isset($imagenantigua) && !empty($imagenantigua)){
+
+				if(File::exists(public_path($imagenantigua))){
+					File::delete(public_path($imagenantigua));
+				}
+			}
+		
+		}
+
+
+		return redirect()->back();
 	}
 
 	public function store(Request $request)
@@ -98,7 +140,6 @@ class PostController extends Controller {
 			'description' 		=> 'required|string',
 			'tipo_id' 			=> 'required|int'
 		]);
-
 				
 		$post = new Post();
 		$post->title = $request->get('title');
@@ -108,7 +149,8 @@ class PostController extends Controller {
 
 		if($file = $request->file('imagen'))
 		{
-			$nombre = $file->getClientOriginalName();
+			$nombre = $id."_".date('Ymdhisu').".".File::extension($file->getClientOriginalName());
+
 			$request->file('imagen')->move(public_path($this->ruta), $nombre);
 
 			$post->imagen = $this->ruta."/".$nombre;
@@ -117,7 +159,7 @@ class PostController extends Controller {
 		}
 		
 	
-		return redirect('/');
+		return redirect()->to('/publish');
 	}
 
 	/**
