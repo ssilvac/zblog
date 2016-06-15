@@ -147,16 +147,20 @@ class PostController extends Controller {
 		$post->user_id = $user->id;
 		$post->tipo_id = $request->get('tipo_id');
 
-		if($file = $request->file('imagen'))
-		{
-			$nombre = $id."_".date('Ymdhisu').".".File::extension($file->getClientOriginalName());
+		if($post->save()){
 
-			$request->file('imagen')->move(public_path($this->ruta), $nombre);
+			if($file = $request->file('imagen'))
+			{
+				$nombre = $post->id."_".date('Ymdhisu').".".File::extension($file->getClientOriginalName());
 
-			$post->imagen = $this->ruta."/".$nombre;
+				$request->file('imagen')->move(public_path($this->ruta), $nombre);
 
-			$post->save();
+				$post->imagen = $this->ruta."/".$nombre;
+
+				$post->save();
+			}
 		}
+			
 		
 	
 		return redirect()->to('/publish');
